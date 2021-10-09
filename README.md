@@ -27,18 +27,17 @@
 
 ## Pre-Reqs
 
--   Download and install node.js version: [nodev14.18.0 LTS](https://nodejs.org/dist/v14.18.0/node-v14.18.0-x64.msi)
--   Navigate to repository root directory from powershell.
+-   [nodev14.18.0 LTS](https://nodejs.org/dist/v14.18.0/node-v14.18.0-x64.msi)
 
 ## Building From Source
 
--   Using powershell, navigate to project root and run `npm install`
--   Using powershell, run `npm run build`. This will create `server.exe`
+-   run `npm install`
+-   run `npm run build`. This will create `server.exe`
 
 ## Running From Source
 
--   Using powershell, navigate to project root and run `npm install`
--   Using powershell, run `npm start`. This will start the server running at `http://localhost:5000`
+-   run `npm install`
+-   run `npm start`. This will start the server running at `http://localhost:5000`
 
 ## License
 
