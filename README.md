@@ -1,6 +1,6 @@
 # ceN's Coordinate Tracker
 
-## This is a coordinate tracker for [newworld-map.com](https://www.newworld-map.com/) that uses [Tesseract.js](https://tesseract.projectnaptha.com/) OCR library built with [Node.js](https://nodejs.org) and a Powershell script.
+## This is a coordinate tracker for New World that uses [Tesseract.js](https://tesseract.projectnaptha.com/) OCR library built with [Node.js](https://nodejs.org) and a Powershell script.
 
 ## **This tool does NOT read/write to the games memory.**
 
