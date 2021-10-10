@@ -19,6 +19,9 @@ async function run() {
     await worker.load();
     await worker.loadLanguage('eng');
     await worker.initialize('eng');
+    await worker.setParameters({
+        tessedit_char_whitelist: '0123456789'
+    });
 
     while (true) {
         const lat = await getCoordinate('lat', worker);
