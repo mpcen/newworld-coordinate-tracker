@@ -15,9 +15,14 @@ const sleep = () => new Promise((resolve) => setTimeout(resolve, 10000));
 async function run() {
     await sleep();
 
+    const worker = Tesseract.createWorker();
+    await worker.load();
+    await worker.loadLanguage('eng');
+    await worker.initialize('eng');
+
     while (true) {
-        const lat = await getCoordinate('lat');
-        const lng = await getCoordinate('lng');
+        const lat = await getCoordinate('lat', worker);
+        const lng = await getCoordinate('lng', worker);
 
         if (
             !isNaN(Number(lat)) &&
@@ -38,9 +43,11 @@ async function run() {
             console.log('FAILED TO PARSE:', lat, lng);
         }
     }
+
+    await worker.terminate();
 }
 
-async function getCoordinate(arg) {
+async function getCoordinate(arg, worker) {
     const { stdout, stderr } = await exec(`./capture.ps1 ${arg}`, {
         shell: 'powershell.exe',
     });
@@ -53,15 +60,7 @@ async function getCoordinate(arg) {
     const arrayBuffer = replaced.split(',');
     const finalArray = new Uint8Array(arrayBuffer);
 
-    const worker = Tesseract.createWorker();
-
-    await worker.load();
-    await worker.loadLanguage('eng');
-    await worker.initialize('eng');
-
     const coord_response = await worker.recognize(finalArray);
-
-    await worker.terminate();
 
     const coordinate = coord_response.data.text.split('\n')[0];
 
