@@ -22,6 +22,8 @@ async function run() {
         if (
             !isNaN(Number(lat)) &&
             !isNaN(Number(lng)) &&
+            Number(lat) > 0 &&
+            Number(lng) > 0 &&
             lat.length &&
             lng.length &&
             lat > 0 &&

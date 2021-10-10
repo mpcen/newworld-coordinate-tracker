@@ -29,15 +29,15 @@
 
 -   [nodev14.18.0 LTS](https://nodejs.org/dist/v14.18.0/node-v14.18.0-x64.msi)
 
-## Building From Source
-
--   run `npm install`
--   run `npm run build`. This will create `server.exe`
-
 ## Running From Source
 
 -   run `npm install`
 -   run `npm start`. This will start the server running at `http://localhost:5000`
+
+## Generate an executable (Experimental)
+
+-   run `npm install`
+-   run `npm run build`. This will create `server.exe`
 
 ## License
 
