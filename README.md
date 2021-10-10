@@ -32,7 +32,7 @@
 ## Running From Source
 
 -   run `npm install`
--   run `npm start`. This will start the server running at `http://localhost:5000`
+-   run program from debugger by launching the `Launch Program` task or run `npm start` from powershell. For some reason running npm start from vscode doesnt work right
 
 ## Generate an executable (Experimental)
 

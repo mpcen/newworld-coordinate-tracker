@@ -10,7 +10,7 @@ app.use(cors());
 const coordinates = { lat: 0, lng: 0 };
 let clients = [];
 
-const sleep = () => new Promise((resolve) => setTimeout(resolve, 5000));
+const sleep = () => new Promise((resolve) => setTimeout(resolve, 10000));
 
 async function run() {
     await sleep();
