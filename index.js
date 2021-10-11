@@ -10,38 +10,61 @@ app.use(cors());
 const coordinates = { lat: 0, lng: 0 };
 let clients = [];
 
-const sleep = () => new Promise((resolve) => setTimeout(resolve, 10000));
+const sleep = () => new Promise((resolve) => setTimeout(resolve, 3500));
 
 async function run() {
     await sleep();
 
+    const worker = Tesseract.createWorker();
+
+    await worker.load();
+    await worker.loadLanguage('eng');
+    await worker.initialize('eng');
+    await worker.setParameters({
+        tessedit_char_whitelist: '0123456789,. ',
+    });
+
     while (true) {
-        const lat = await getCoordinate('lat');
-        const lng = await getCoordinate('lng');
+        const ocrResponse = await getCoordinates(worker);
+        console.log('ocrResponse:', ocrResponse);
+
+        const dirtyCoordinates = ocrResponse.trim().split(' ');
+        console.log('dirtyCoordinates:', dirtyCoordinates);
+
+        if (dirtyCoordinates.length !== 3) {
+            console.log('Bad OCR response, skipping this iteration');
+            continue;
+        }
+
+        const cleanedCoordinates = dirtyCoordinates.map((coordinate) => {
+            const commasRemoved = coordinate.split(',').join('.');
+            return commasRemoved.split('.')[0];
+        });
+
+        const [lng, lat, ele] = cleanedCoordinates;
 
         if (
-            !isNaN(Number(lat)) &&
-            !isNaN(Number(lng)) &&
-            Number(lat) > 0 &&
-            Number(lng) > 0 &&
-            lat.length &&
-            lng.length &&
+            Number(lng) &&
+            Number(lat) &&
             lat > 0 &&
-            lng > 0
+            lng > 0 &&
+            lng > 4500 &&
+            lng < 15000 &&
+            lat < 15000
         ) {
-            console.log('SUCCESSFULLY PARSED:', lat, lng);
-            coordinates.lat = lat;
             coordinates.lng = lng;
+            coordinates.lat = lat;
 
+            console.log('SUCCESS:', lng, lat);
             sendEventsToAll();
         } else {
-            console.log('FAILED TO PARSE:', lat, lng);
+            console.error('FAILED:', lng, lat);
         }
     }
 }
 
-async function getCoordinate(arg) {
-    const { stdout, stderr } = await exec(`./capture.ps1 ${arg}`, {
+async function getCoordinates(worker) {
+    const { stdout, stderr } = await exec(`./capture.ps1`, {
         shell: 'powershell.exe',
     });
 
@@ -53,15 +76,7 @@ async function getCoordinate(arg) {
     const arrayBuffer = replaced.split(',');
     const finalArray = new Uint8Array(arrayBuffer);
 
-    const worker = Tesseract.createWorker();
-
-    await worker.load();
-    await worker.loadLanguage('eng');
-    await worker.initialize('eng');
-
     const coord_response = await worker.recognize(finalArray);
-
-    await worker.terminate();
 
     const coordinate = coord_response.data.text.split('\n')[0];
 

@@ -1,7 +1,3 @@
-param($l)
-
-$scope = $l
-
 [Reflection.Assembly]::LoadWithPartialName("System.Drawing")
 [Reflection.Assembly]::LoadWithPartialName("System.IO")
 
@@ -13,6 +9,12 @@ function screenshot([Drawing.Rectangle]$bounds) {
 
    $stream = New-Object IO.MemoryStream
    $bmp.Save($stream, ([system.drawing.imaging.imageformat]::png))
+   
+   # Uncomment this to see the actual screenshot being used for OCR
+   # $bmp.Save(
+   #    "path/to/your/working/directory",
+   #    ([system.drawing.imaging.imageformat]::png)
+   # )
 
    $graphics.Dispose()
    $bmp.Dispose()
@@ -20,11 +22,6 @@ function screenshot([Drawing.Rectangle]$bounds) {
    return $stream.ToArray()
 }
 
-$boundsLat = [Drawing.Rectangle]::FromLTRB(1760, 20, 1800, 35)
-$boundsLng = [Drawing.Rectangle]::FromLTRB(1670, 20, 1710, 35)
+$bounds = [Drawing.Rectangle]::FromLTRB(1525, 20, 1920, 35)
 
-if($scope -eq "lat") {
-   screenshot $boundsLat
-} else {
-   screenshot $boundsLng
-}
+screenshot $bounds
