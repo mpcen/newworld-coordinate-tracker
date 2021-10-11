@@ -28,6 +28,8 @@ async function run() {
         sleep(50)
         const ocrResponse = await getCoordinates(worker);
         console.log('ocrResponse:', ocrResponse);
+        
+        if (!ocrResponse) continue;
 
         const dirtyCoordinates = ocrResponse.trim().split(' ');
         console.log('dirtyCoordinates:', dirtyCoordinates);
@@ -69,7 +71,11 @@ async function getCoordinates(worker) {
         shell: 'powershell.exe',
     });
 
-    const parsed = stdout.split('System.IO.dll\r\n')[1];
+    if (!stdout.includes('System.IO.dll')) {
+        //honestly no idea how to handle this edge case
+        return
+    }
+    const parsed = stdout.substring(stdout.indexOf('System.IO.dll') + 'System.IO.dll'.length).trim();
 
     if (!parsed) return;
 
