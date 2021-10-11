@@ -10,10 +10,10 @@ app.use(cors());
 const coordinates = { lat: 0, lng: 0 };
 let clients = [];
 
-const sleep = () => new Promise((resolve) => setTimeout(resolve, 3500));
+const sleep = (time) => new Promise((resolve) => setTimeout(resolve, time));
 
 async function run() {
-    await sleep();
+    await sleep(3500);
 
     const worker = Tesseract.createWorker();
 
@@ -25,6 +25,7 @@ async function run() {
     });
 
     while (true) {
+        sleep(50)
         const ocrResponse = await getCoordinates(worker);
         console.log('ocrResponse:', ocrResponse);
 
