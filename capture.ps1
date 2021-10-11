@@ -22,6 +22,24 @@ function screenshot([Drawing.Rectangle]$bounds) {
    return $stream.ToArray()
 }
 
-$bounds = [Drawing.Rectangle]::FromLTRB(1525, 20, 1920, 35)
+$vc = Get-WmiObject -class "Win32_VideoController"
+$mainMonitor = [PSCustomObject]@{
+   monitorWidth = $vc.CurrentHorizontalResolution[0] #primary monitor
+   monitorHeight = $vc.CurrentVerticalResolution[0] #primary monitor
+}
+
+$posOffset = [PSCustomObject]@{
+   x = $mainMonitor.monitorWidth
+   y = 20
+   w = -395
+   h = 15
+}
+
+$bounds = [Drawing.Rectangle]::FromLTRB(
+      $posOffset.x + $posOffset.w, 
+      $posOffset.y, 
+      $posOffset.x, 
+      $posOffset.y + $posOffset.h
+   )
 
 screenshot $bounds
