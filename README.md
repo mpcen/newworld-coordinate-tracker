@@ -7,7 +7,7 @@
 ## How it works
 
 -   The node application streams your latitude and longitude via a Server Sent Event (SSE).
--   The powershell application takes a screenshot at a specific offset and sends the image bitmap back to node via a MemoryStrem
+-   The powershell application takes a screenshot at a specific offset and sends the image bitmap back to node via a MemoryStream
 
 ## The flow
 
