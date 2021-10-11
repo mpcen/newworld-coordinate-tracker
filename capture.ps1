@@ -12,7 +12,7 @@ function screenshot([Drawing.Rectangle]$bounds) {
    
    # Uncomment this to see the actual screenshot being used for OCR
    # $bmp.Save(
-   #    "path/to/your/working/directory",
+   #    "./capture.png",
    #    ([system.drawing.imaging.imageformat]::png)
    # )
 
