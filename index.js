@@ -10,10 +10,10 @@ app.use(cors());
 const coordinates = { lat: 0, lng: 0 };
 let clients = [];
 
-const sleep = () => new Promise((resolve) => setTimeout(resolve, 3500));
+const sleep = (time) => new Promise((resolve) => setTimeout(resolve, time));
 
 async function run() {
-    await sleep();
+    await sleep(3500);
 
     const worker = Tesseract.createWorker();
 
@@ -25,8 +25,11 @@ async function run() {
     });
 
     while (true) {
+        sleep(50)
         const ocrResponse = await getCoordinates(worker);
         console.log('ocrResponse:', ocrResponse);
+        
+        if (!ocrResponse) continue;
 
         const dirtyCoordinates = ocrResponse.trim().split(' ');
         console.log('dirtyCoordinates:', dirtyCoordinates);
@@ -68,7 +71,11 @@ async function getCoordinates(worker) {
         shell: 'powershell.exe',
     });
 
-    const parsed = stdout.split('System.IO.dll\r\n')[1];
+    if (!stdout.includes('System.IO.dll')) {
+        //honestly no idea how to handle this edge case
+        return
+    }
+    const parsed = stdout.substring(stdout.indexOf('System.IO.dll') + 'System.IO.dll'.length).trim();
 
     if (!parsed) return;
 
