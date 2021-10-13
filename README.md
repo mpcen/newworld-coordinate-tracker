@@ -12,16 +12,22 @@
 ## The flow
 
 1. Node calls the powershell script to capture either lat/lng.
-2. Powershell takes the request and captures either lat/lng and sends the image bitmap back to node in a memory stream
-3. Node receives the bitmap, and sends it to Tesseract
-4. Tesseract does its best to parse the numbers from the image and returns it back to node
+2. Powershell takes the request and captures character position and sends the image bitmap back to node in a memory stream.
+3. Node receives the bitmap, runs it through an image filter, then sends the filtered image to Tesseract.
+4. Tesseract does its best to parse the numbers from the image and returns it back to node.
 5. Node gets the parsed data from Tesseract. If the text is valid, it sends it to clients connected to `http://localhost:3000/events` via an SSE
 
 ---
+## Roadmap
+- Easy-to-run executable
+- Chrome Extension
+- User configurable options/profiles
+- Standalone map independent of newworld-map.com
+---
 
-## Resolutions Tested
+## Resolutions
 
--   1920x1080
+- Works on all resolutions
 
 ---
 
