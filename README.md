@@ -6,11 +6,6 @@
 
 ## How it works
 
--   The powershell application takes a screenshot of the characters position and sends the image bitmap back to node via a MemoryStream
--   The node application streams your latitude and longitude via a Server Sent Event (SSE).
-
-## The flow
-
 1. Node calls the powershell script to capture either lat/lng.
 2. Powershell takes the request and captures character position and sends the image bitmap back to node in a memory stream.
 3. Node receives the bitmap, runs it through an image filter, then sends the filtered image to Tesseract.
