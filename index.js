@@ -8,7 +8,9 @@ const app = express();
 app.use(cors());
 
 const coordinates = { lat: 0, lng: 0 };
-let clients = [];
+const previousCoordinates = { lat: 0, lng: 0 };
+const potentialNextCoordinates = { lat: 0, lng: 0 };
+let connectedClients = [];
 
 const sleep = (time) => new Promise((resolve) => setTimeout(resolve, time));
 
@@ -25,14 +27,12 @@ async function run() {
     });
 
     while (true) {
-        sleep(50)
+        sleep(50);
         const ocrResponse = await getCoordinates(worker);
-        console.log('ocrResponse:', ocrResponse);
-        
+
         if (!ocrResponse) continue;
 
         const dirtyCoordinates = ocrResponse.trim().split(' ');
-        console.log('dirtyCoordinates:', dirtyCoordinates);
 
         if (dirtyCoordinates.length !== 3) {
             console.log('Bad OCR response, skipping this iteration');
@@ -46,22 +46,44 @@ async function run() {
 
         const [lng, lat, ele] = cleanedCoordinates;
 
+        // Make sure the lng/lat are within Aeternum's bounds
         if (
             Number(lng) &&
             Number(lat) &&
-            lat > 0 &&
-            lng > 0 &&
+            lat > 75 &&
+            lat < 10200 &&
             lng > 4500 &&
-            lng < 15000 &&
-            lat < 15000
+            lng < 14300
         ) {
+            // The following conditionals prevent nasty discrepancies causing coordinates to jump
+            if (
+                Math.abs(lat - previousCoordinates.lat) < 100 &&
+                Math.abs(lng - previousCoordinates.lng) < 100
+            ) {
+                previousCoordinates.lng = lng;
+                previousCoordinates.lat = lat;
+            } else if (
+                Math.abs(lat - potentialNextCoordinates.lat) < 100 &&
+                Math.abs(lng - potentialNextCoordinates.lng) < 100
+            ) {
+                previousCoordinates.lng = lng;
+                previousCoordinates.lat = lat;
+            } else {
+                // Handle fast-travel case
+                previousCoordinates.lng = lng;
+                previousCoordinates.lat = lat;
+
+                console.log('Possible fast travel. Skipping');
+                continue;
+            }
+
             coordinates.lng = lng;
             coordinates.lat = lat;
 
             console.log('SUCCESS:', lng, lat);
             sendEventsToAll();
         } else {
-            console.error('FAILED:', lng, lat);
+            console.error('FAILED! Out of bounds:', lng, lat);
         }
     }
 }
@@ -73,9 +95,11 @@ async function getCoordinates(worker) {
 
     if (!stdout.includes('System.IO.dll')) {
         //honestly no idea how to handle this edge case
-        return
+        return;
     }
-    const parsed = stdout.substring(stdout.indexOf('System.IO.dll') + 'System.IO.dll'.length).trim();
+    const parsed = stdout
+        .substring(stdout.indexOf('System.IO.dll') + 'System.IO.dll'.length)
+        .trim();
 
     if (!parsed) return;
 
@@ -110,16 +134,18 @@ function eventsHandler(req, res, next) {
         res,
     };
 
-    clients.push(newClient);
+    connectedClients.push(newClient);
 
     req.on('close', () => {
         console.log(`${clientId} Connection closed`);
-        clients = clients.filter((client) => client.id !== clientId);
+        connectedClients = connectedClients.filter(
+            (client) => client.id !== clientId
+        );
     });
 }
 
 function sendEventsToAll() {
-    clients.forEach((client) =>
+    connectedClients.forEach((client) =>
         client.res.write(`data: ${JSON.stringify(coordinates)}\n\n`)
     );
 }
