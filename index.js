@@ -27,7 +27,7 @@ async function run() {
     });
 
     while (true) {
-        sleep(50);
+        await sleep(50);
         const ocrResponse = await getCoordinates(worker);
 
         if (!ocrResponse) continue;
