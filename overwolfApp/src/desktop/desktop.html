@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="../../css/general.css" />
+    <link rel="stylesheet" href="../../css/header.css" />
+    <link rel="stylesheet" href="../../css/desktop.css" />
+    <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
+    <title>Last Image Processed</title>
+  </head>
+  <body class="desktop">
+    <header id="header" class="app-header">
+      <img src="../../img/header_icon.svg" />
+      <h1>Sample App / desktop window</h1>
+      <div class="window-controls-group">
+        <button class="icon window-control" id="minimizeButton">
+          <svg>
+            <use xlink:href="/img/header_icons.svg#window-control_minimize" />
+          </svg>
+        </button>
+        <button class="icon window-control" id="maximizeButton">
+          <svg>
+            <use xlink:href="/img/header_icons.svg#window-control_maximize" />
+          </svg>
+        </button>
+        <button class="icon window-control window-control-close" id="closeButton">
+          <svg>
+            <use xlink:href="/img/header_icons.svg#window-control_close" />
+          </svg>
+        </button>
+      </div>
+    </header>
+  <h1> Current Coordinates: <span id="coordinates"></div></h1>  
+
+  <iframe
+  id='map_iframe'
+  title='map'
+  src="https://www.newworld-map.com"
+  frameborder='0'
+  marginheight='0'
+  marginwidth='0'
+  width='100%'
+  height='100%'
+  scrolling='auto'
+></iframe>
+
+    </body>
+  
+</html>
